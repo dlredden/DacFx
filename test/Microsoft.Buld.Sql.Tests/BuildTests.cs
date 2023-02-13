@@ -206,5 +206,20 @@ namespace Microsoft.Build.Sql.Tests
                 }
             }
         }
+
+        [Test]
+        [Description("Verifies building multiple projects in a traversal projecct.")]
+        public void MultiProjectTest()
+        {
+            // Build once and verify success
+            int exitCode = this.RunGenericDotnetCommand("build", out string stdOutput, out string stdError);
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+
+            // Run the build again to verify incremental build
+            exitCode = this.RunGenericDotnetCommand("build", out stdOutput, out stdError);
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+        }
     }
 }
