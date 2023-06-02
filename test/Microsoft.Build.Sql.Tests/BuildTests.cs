@@ -206,5 +206,25 @@ namespace Microsoft.Build.Sql.Tests
                 }
             }
         }
+
+        [Test]
+        [Description("Issue #117: Verifies build with Configuration set in project file.")]
+        public void VerifyBuildWithConfiguration()
+        {
+            // Set the configuration to Release
+            ProjectUtils.AddProperties(this.GetProjectFilePath(), new Dictionary<string, string>()
+            {
+                { "Configuration", "Release" }
+            });
+
+            string stdOutput, stdError;
+            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
+
+            // Verify success
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            string dacpacPath = Path.Combine(this.WorkingDirectory, "bin", "Release", DatabaseProjectName + ".dacpac");
+            FileAssert.Exists(dacpacPath);
+        }
     }
 }
